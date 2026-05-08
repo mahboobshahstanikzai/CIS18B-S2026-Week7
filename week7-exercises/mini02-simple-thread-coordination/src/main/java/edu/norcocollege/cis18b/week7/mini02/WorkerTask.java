@@ -23,7 +23,13 @@ public class WorkerTask implements Runnable {
         try {
             startGate.await();
             for (int step = 1; step <= steps; step++) {
+                // ===== EXTENSION: Per-step logging =====
+                System.out.println("  [" + workerName + "] starting step " + step);
+                
                 Thread.sleep(delayMillis);
+                
+                System.out.println("  [" + workerName + "] completed step " + step);
+                // =======================================
             }
             synchronized (completionLog) {
                 completionLog.add(workerName + " finished " + steps + " steps");

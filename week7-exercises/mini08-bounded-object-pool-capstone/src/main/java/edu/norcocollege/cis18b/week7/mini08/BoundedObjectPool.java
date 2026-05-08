@@ -6,6 +6,18 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+/*
+ * ============================================
+ * SELF-CHECK ANSWERS - MINI 08
+ * ============================================
+ * 
+ * Q1: Why does this pattern fit external resources better?
+ * A1: DB connections expensive to create. Regular Java objects cheap.
+ * 
+ * Q2: Did you prevent double-return or invalid-return mistakes?
+ * A2: YES - release() checks inUse.remove(resource) and throws exception.
+ */
+
 public class BoundedObjectPool<T> {
     private final int capacity;
     private final Supplier<T> factory;
@@ -39,7 +51,6 @@ public class BoundedObjectPool<T> {
             wait(remaining);
             remaining = deadline - System.currentTimeMillis();
         }
-
         return checkoutResource();
     }
 
@@ -51,18 +62,10 @@ public class BoundedObjectPool<T> {
         notifyAll();
     }
 
-    public synchronized int totalCreated() {
-        return createdCount;
-    }
-
-    public synchronized int availableCount() {
-        return available.size();
-    }
-
-    public synchronized int inUseCount() {
-        return inUse.size();
-    }
-
+    public synchronized int totalCreated() { return createdCount; }
+    public synchronized int availableCount() { return available.size(); }
+    public synchronized int inUseCount() { return inUse.size(); }
+    
     private T checkoutResource() {
         T resource;
         if (!available.isEmpty()) {

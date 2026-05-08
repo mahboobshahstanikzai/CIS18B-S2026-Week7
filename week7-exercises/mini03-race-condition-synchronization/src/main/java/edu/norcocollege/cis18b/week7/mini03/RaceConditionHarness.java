@@ -4,8 +4,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class RaceConditionHarness {
-    private RaceConditionHarness() {
-    }
+    private RaceConditionHarness() {}
 
     public static int runUnsafeTrial(int threadCount, int incrementsPerThread) throws InterruptedException {
         UnsafeCounter counter = new UnsafeCounter();

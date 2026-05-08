@@ -5,6 +5,8 @@ import java.util.List;
 public class GuardedBufferDemo {
 
     public static void main(String[] args) throws InterruptedException {
+        System.out.println("=== Guarded Producer-Consumer Demo ===\n");
+        
         OneSlotMessageBuffer buffer = new OneSlotMessageBuffer();
         List<String> messages = List.of("alpha", "beta", "gamma");
 
@@ -15,6 +17,8 @@ public class GuardedBufferDemo {
         consumer.start();
         producer.join();
         consumer.join();
+        
+        System.out.println("\n✓ All messages processed successfully!");
     }
 
     private static void produce(List<String> messages, OneSlotMessageBuffer buffer) {
@@ -22,6 +26,7 @@ public class GuardedBufferDemo {
             for (String message : messages) {
                 buffer.put(message);
                 System.out.println("Produced: " + message);
+                Thread.sleep(100); // Simulate production time
             }
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
@@ -31,6 +36,7 @@ public class GuardedBufferDemo {
     private static void consume(int count, OneSlotMessageBuffer buffer) {
         try {
             for (int index = 0; index < count; index++) {
+                Thread.sleep(150); // Simulate consumption time (slower than producer)
                 System.out.println("Consumed: " + buffer.take());
             }
         } catch (InterruptedException ex) {
